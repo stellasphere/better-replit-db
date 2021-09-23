@@ -1,6 +1,6 @@
 {
   "name": "better-replit-db",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Client for Replit Database with built in memory caching.",
   "main": "index.js",
   "scripts": {
