@@ -5,7 +5,16 @@
 # Better Replit DB
 Better Replit DB is a fork of the official Replit Database client, with the added benefit of the contents being cached in memory. This allows for much faster load read and write times than the regular client. It also uses `await/async`, just like the official client.
 
-*Better Replit DB is a drop-in replacement as well, simply change `require('@replit/database')` to `require('better-replit-db')` in your JS file.*
+## Moving from `@replit/database` to `better-replit-db`
+Moving from `@replit/database` to `better-replit-db` is really easy. Simply replace these lines:
+```js
+const Database = require("@replit/database");
+const db = new Database();
+```
+with this:
+```js
+const db = require("better-replit-db");
+```
 
 ***IT IS LITERALLY DOZENS OF TIMES FASTER THAN THE OFFICIAL LIB***
 
