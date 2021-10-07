@@ -1,19 +1,35 @@
 const fetch = require("node-fetch");
 
+if (!((typeof process !== 'undefined') && 
+(process.release.name.search(/node|io.js/) !== -1))) {
+	throw new Error('better-replit-db is not running in Node.js');
+}
+
 class Client {
 	/**
 	 * Initiates Class.
-	 * @param {String} key Custom database URL
+	 * @param {String} url Custom database URL
 	 */
-	constructor(key) {
-		if (key) this.key = key;
-		else this.key = process.env.REPLIT_DB_URL;	
+	constructor(url) {
+		if (url) this.url = url;
+		else this.url = process.env.REPLIT_DB_URL;	
 
 		this.dbCache = {};
 
 		this.getAllNoCache().then((all) => {
 			this.dbCache = all;
 		});
+	}
+
+	/**
+	 * Initiates another instance of the db Class.
+	 * @param {String} url Custom database URL
+	 */
+	connect(url) {
+		if (!url) {
+			throw new Error('You did no pass a URL string to connect()').
+		}
+		return new this.constructor(url);
 	}
 
 	// Native Functions
@@ -45,7 +61,7 @@ class Client {
 	 * @param {boolean} [options.raw=false] Makes it so that we return the raw string value. Default is false.
 	 */
 	async getNoCache(key, options) {
-		return await fetch(this.key + "/" + key)
+		return await fetch(this.url + "/" + key)
 		.then((e) => e.text())
 		.then((strValue) => {
 			if (options && options.raw) {
@@ -78,13 +94,21 @@ class Client {
 	 * Sets a key
 	 * @param {String} key Key
 	 * @param {any} value Value
+	 * @param {boolean} [options.raw=false] Makes it so that we store the raw string value. Default is false.
 	 */
-	async set(key, value) {
-		const strValue = JSON.stringify(value);
+	async set(key, value, options) {
+
+		let strValue;
+
+		if (options && options.raw) {
+			strValue = value;
+		} else {
+			strValue = JSON.stringify(value);
+		}
 
 		this.dbCache[key] = value;
 
-		fetch(this.key, {
+		fetch(this.url, {
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
 			body: encodeURIComponent(key) + "=" + encodeURIComponent(strValue),
@@ -99,7 +123,7 @@ class Client {
 	 */
 	async delete(key) {
 		await delete this.dbCache[key];
-		fetch(this.key + "/" + key, { method: "DELETE" });
+		fetch(this.url + "/" + key, { method: "DELETE" });
 		return this;
 	}
 
@@ -119,7 +143,7 @@ class Client {
 	 */
 	async listNoCache(prefix = "") {
 		return await fetch(
-		this.key + `?encode=true&prefix=${encodeURIComponent(prefix)}`
+		this.url + `?encode=true&prefix=${encodeURIComponent(prefix)}`
 		)
 		.then((r) => r.text())
 		.then((t) => {
@@ -198,4 +222,4 @@ class Client {
 	}
 }
 
-module.exports = Client;
+module.exports = new Client();

@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/better-replit-db.svg)](https://badge.fury.io/js/better-replit-db)
 
-[![Run on Repl.it](https://replit.com/badge/github/pieromqwerty/better-replit-db)](https://replit.com/github/pieromqwerty/better-replit-db)
+[![Run on Replit](https://replit.com/badge/github/pieromqwerty/better-replit-db)](https://replit.com/github/pieromqwerty/better-replit-db)
 
 # Better Replit DB
 Better Replit DB is a fork of the official Replit Database client, with the added benefit of the contents being cached in memory. This allows for much faster load read and write times than the regular client. It also uses `await/async`, just like the official client.
@@ -26,8 +26,7 @@ Ensuring Values are Escaped|**35 ms**|1350ms|**38.6x**
 
 ## Get started
 ```js
-const database = require("better-replit-db");
-const db = new database();
+const db = require("better-replit-db");
 
 db.set("key", "value").then(async () => {
 	let key = await db.get("key");
@@ -39,51 +38,94 @@ db.set("key", "value").then(async () => {
 ### `class Client(String key?)`
 The key is the optional custom URL.
 
+- `db.connect(String key)`
+  Returns another db object, but connects with the provided key.
+  ```js
+  db.get("key").then(console.log);
+  ```
+
 **Native Functions**
 
-These functions are specified in the repl.it DB.
+These functions are specified in the replit DB.
 
-> `get(String key, Object options?)`
+- `get(String key, Object options?)`
 
-Gets a key. Returns Promise.
-```js
-Client.get("key", { raw: false }).then(console.log);
-```
+  Gets a key. Returns Promise.
+  ```js
+  db.get("key").then(console.log);
+  ```
+  Or if you want to store raw data:
+  ```js
+  db.get("key", { raw: true }).then(console.log);
+  ```
 
-> `set(String key, Any value)`
+- `set(String key, Any value)`
+  
+  Sets a key to value. Returns Client. 
+  ```js
+  db.set("key", "value");
+  ```
+  Or if you want to set raw data:
+  ```js
+  db.set("key", "value", { raw: true });
+  ```
 
-Sets a key to value. Returns Client. 
+- `delete(String key)`
 
-> `delete(String key)`
+  Deletes a key. Returns Client.
+  ```js
+  db.delete("key");
+  ```
 
-Deletes a key. Returns Client.
+- `list(String? prefix)`
 
-> `list(String? prefix)`
+  Lists all of the keys.
+  ```js
+  db.list();
+  ```
+  Or if you want all of the keys starting with `prefix`.
+  ```js
+  db.list("prefix");
+  ```
 
-Lists all of the keys, or all of the keys starting with `prefix` if specifed.
 
 **Dynamic Functions**
 
 These functions have been added by the original author.
 
-> `empty()`
+- `empty()`
 
-Clears the database. Returns Client
+  Clears the database. Returns Client
+  ```js
+  db.empty();
+  ```
 
-> `getAll()`
+- `getAll()`
+  
+  Get all key/value pairs and return as an object.
+  ```js
+  db.getAll();
+  ```
 
-Get all key/value pairs and return as an object.
+- `setAll(Object obj)`
 
-> `setAll(Object obj)`
+  Sets the entire database through a key/value object. Returns Client
+  ```js
+  db.setAll({key1: 'value1', key2: 'value2'});
+  ```
 
-Sets the entire database through a key/value object. Returns Client
+- `deleteMultiple(...String args)`
 
-> `deleteMultiple(...String args)`
-
-Deletes multiple keys. Returns client.
+  Deletes multiple keys. Returns client.
+  ```js
+  db.delete("key1", "key2", "key3");
+  ```
 
 ## Tests
 ```sh
 npm i
 npm run test
 ```
+
+## License
+This software is under the MIT license

@@ -1,26 +1,31 @@
 const fetch = require("node-fetch");
-const Client = require("@replit/database");
-
-let client;
 
 beforeAll(async () => {
-	client = new Client();
-	await client.empty();
+  client = require("../../index");
+  await client.empty();
 });
 
 afterEach(async () => {
-	await client.empty();
+  await client.empty();
 });
 
-test("create a client with a key 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("makes a second client with the URL, set a value, and delete it", async () => {
+	let db2 = client.connect(process.env.REPLIT_DB_URL);
+	expect(db2)
+	.toBeTruthy();
+	expect(await db2.set('key', 'value')).toEqual(db2);
+	expect(await db2.get('key')).toEqual('value');
+});
+
+test("create a client with a key 1 times", async () => {
+	for (let i = 0; i < 1; i++) {
 		expect(client).toBeTruthy();
-		expect(typeof client.key).toBe("string");
+		expect(typeof client.url).toBe("string");
 	}
 });
 
-test("sets a value 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("sets a value 1 times", async () => {
+	for (let i = 0; i < 1; i++) {
 		expect(await client.set("key", "value")).toEqual(client);
 		expect(await client.setAll({ key: "value", second: "secondThing" })).toEqual(
 			client
@@ -28,8 +33,8 @@ test("sets a value 20 times", async () => {
 	}
 });
 
-test("list keys 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("list keys 1 times", async () => {
+	for (let i = 0; i < 1; i++) {
 		await client.setAll({
 			key: "value",
 			second: "secondThing",
@@ -39,8 +44,8 @@ test("list keys 20 times", async () => {
 	}
 });
 
-test("gets a value 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("gets a value 1 times", async () => {
+	for (let i = 0; i < 1; i++) {
 		await client.setAll({
 			key: "value",
 		});
@@ -49,8 +54,8 @@ test("gets a value 20 times", async () => {
 	}
 });
 
-test("delete a value 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("delete a value 1 times", async () => {
+	for (let i = 0; i < 1; i++) {
 		await client.setAll({
 			key: "value",
 			deleteThis: "please",
@@ -68,19 +73,19 @@ test("delete a value 20 times", async () => {
 	}
 });
 
-test("list keys with newline 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("list keys with newline", async () => {
+	for (let i = 0; i < 1; i++) {
 		await client.setAll({
 			"key\nwit": "first",
 			keywidout: "second",
 		});
 
-		expect(await client.list()).toEqual(["keywidout", "key\nwit"]);
+		expect(await client.list()).toEqual(["key\nwit", "keywidout"]);
 	}
 });
 
-test("ensure that we escape values when setting 20 times", async () => {
-	for (let i = 0; i < 20; i++) {
+test("ensure that we escape values when setting", async () => {
+	for (let i = 0; i < 1; i++) {
 		expect(await client.set("a", "1;b=2")).toEqual(client);
 		expect(await client.list()).toEqual(["a"])
 		expect(await client.get("a")).toEqual("1;b=2")

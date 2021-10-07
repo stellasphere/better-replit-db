@@ -1,9 +1,11 @@
 export class Client {
   constructor(key?: string);
 
+  public connect(key: string);
+
   // Native
   public get(key: string, options?: { raw?: boolean }): Promise<unknown>;
-  public set(key: string, value: any): Client;
+  public set(key: string, value: any, options?: { raw?: boolean }): Client;
   public delete(key: string): Client;
   public list(prefix?: string): Promise<string[]>;
 
