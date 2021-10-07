@@ -1,3 +1,7 @@
 tests
 .replit
 package-lock.json
+.github
+.gitignore
+node_modules
+LICENSE
