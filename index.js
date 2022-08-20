@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+import fetch from "node-fetch";
 
 if (!((typeof process !== 'undefined') && 
 (process.release.name.search(/node|io.js/) !== -1))) {
@@ -222,4 +222,4 @@ class Client {
 	}
 }
 
-module.exports = new Client();
+export default Client
